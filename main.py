@@ -25,11 +25,11 @@ def webhook():
         #retrieve the value of the key 'name'
         firstname = request_json_dict['first_name']
         print (firstname)
-        firstname           = request_json.get(['Body']['first_name'])
-        lastname           = request_json.get(['Body']['last_name'])
-        email           = request_json.get(['Body']['email'])
-        phone           = request_json.get(['Body']['phone'])
-        address_1       = request_json.get(['Body']['address_1'])
+        # firstname           = request_json.get(['Body']['first_name'])
+        # lastname           = request_json.get(['Body']['last_name'])
+        # email           = request_json.get(['Body']['email'])
+        # phone           = request_json.get(['Body']['phone'])
+        # address_1       = request_json.get(['Body']['address_1'])
         #print (result)
        # return result
         #print('JSON Message: ' + json.dumps(request.json))
