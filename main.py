@@ -11,6 +11,11 @@ api = Api(app)
 # 
 import http.server
 
+@app.route('/', methods=['GET'])
+def index():
+    return "Hello World!"
+
+
 @app.route('/webhook', methods=['POST'])
 def webhook():
     # if request.method == 'POST':
