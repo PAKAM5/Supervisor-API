@@ -1,1 +1,1 @@
-web: gunicorn flask-webhook:main
+web: gunicorn app:main
