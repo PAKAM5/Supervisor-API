@@ -28,7 +28,8 @@ def webhook():
        # print the dictionary
         print(request_json_dict)
         #retrieve the value of the key 'name'
-        firstname = request_json_dict['first_name']
+        firstname = request_json_dict['_links']['billing']['first_name']
+        
         print (firstname)
         # firstname           = request_json.get(['Body']['first_name'])
         # lastname           = request_json.get(['Body']['last_name'])
