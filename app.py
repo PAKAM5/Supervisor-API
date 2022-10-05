@@ -7,9 +7,6 @@ import requests
 from flask import Flask, jsonify, request, json
 from flask_restful import Api, Resource, reqparse, abort, fields, marshal_with
 from flask_sqlalchemy import SQLAlchemy
-# import socketserver
-# import http.server
-# import cgi
 
 
 app = Flask(__name__)
@@ -63,21 +60,14 @@ def webhook():
     #Convert dictionary values to sql objects
 
     #print out examples
-    print(firstname)
-    print(lastname)
+    print('First Name: ' + firstname)
+    print('Last Name: ' + lastname)
+    print ('Email: ' + email)
+    print('Phone : ' + phone)
+    print('Product_ID: ' + product_id)
+    print('Quantity: ' + quantity)
+    print('School Name: ' + school_name)
 
-
-#another way of retrieving the value of the key 'first_name'
-
-    
-    # firstname           = request_json.get(['Body']['first_name'])
-    # lastname           = request_json.get(['Body']['last_name'])
-    # email           = request_json.get(['Body']['email'])
-    # phone           = request_json.get(['Body']['phone'])
-    # address_1       = request_json.get(['Body']['address_1'])
-    #print (result)
-    # return result
-    #print('JSON Message: ' + json.dumps(request.json))
     print('First Name: ' + firstname)    
 
     #if sending via json
