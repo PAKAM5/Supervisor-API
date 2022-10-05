@@ -64,9 +64,9 @@ def webhook():
     print('Last Name: ' + lastname)
     print ('Email: ' + email)
     print('Phone : ' + phone)
-    print('Product_ID: ' + product_id)
-    print('Quantity: ' + quantity)
-    print('School Name: ' + school_name)
+    print('Product_ID: ' + str(product_id))
+    print('Quantity: ' + str(quantity))
+    print('School Name: ' + str(school_name))
 
     print('First Name: ' + firstname)    
 
