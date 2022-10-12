@@ -29,6 +29,7 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(255), unique=True)
     password = db.Column(db.String(255))
+    phone = db.Column(db.String(255))
     first_name = db.Column(db.String(255))
     last_name = db.Column(db.String(255))
     name = db.Column(db.String(255))
@@ -89,8 +90,6 @@ class SubscriptionByOrder(db.Model):
     subscription_duration = db.Column(db.Integer, nullable=False)
 
 
-
-
 # def create_app():
 #secure cookies data, and set up link to mysql database
 app.config['SECRET_KEY'] = 'lolo'
@@ -122,6 +121,11 @@ SUPERVISOR_SECRET = "lolo"
 
 
 SUPERVISOR_ENDPOINT = 'https://ops.irdo1.safecoms.net/webhook'
+
+#Define error
+class DataInputError(Exception):
+    """There was an issue with the data input"""
+    pass
 
 
 @app.route('/', methods=['GET', "POST"])
@@ -166,26 +170,26 @@ def webhook():
     print('Quantity: ' + str(quantity))
     print('School Name: ' + str(school_name))
     
-
-    #Send data to respective tables
-    #add school data     
-    school_data = School( school_name = school_name)
-    db.session.add(school_data)
-    db.session.commit()
-    #add user data
-    user_data = User(first_name = first_name, last_name = last_name, email = email, phone = phone, name = 'Administrator')
-    db.session.add(user_data)
-    db.session.commit()
-    #add subscription data
-    subscription_data = Subscription(product_id = product_id, quantity = quantity)
-    db.session.add(subscription_data)
-    db.session.commit()
-    #when data is sent to the database, convert user to is_superuser and is_approved
-    user = User()
-    user.is_superuser = True
-    user.is_approved = True
-    db.session.commit()
-    return "Webhook received!"
+    def transaction():
+        #Send data to respective tables
+        #add school data     
+        school_data = School( school_name = school_name)
+        db.session.add(school_data)
+        db.session.commit()
+        #add user data
+        user_data = User(first_name = first_name, last_name = last_name, email = email, phone = phone, name = 'Administrator')
+        db.session.add(user_data)
+        db.session.commit()
+        #add subscription data
+        subscription_data = Subscription(product_id = product_id, quantity = quantity)
+        db.session.add(subscription_data)
+        db.session.commit()
+        #when data is sent to the database, convert user to is_superuser and is_approved
+        user = User()
+        user.is_superuser = True
+        user.is_approved = True
+        db.session.commit()
+        return "Webhook received!"
 
     
 # #  #Create product subscription function for subscription by order table
