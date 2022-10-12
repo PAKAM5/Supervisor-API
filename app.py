@@ -1,13 +1,15 @@
 # from xml.sax.handler import DTDHandler
 import os
 import json
-import requests
 from flask import Flask, jsonify, request, json
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import inspect, create_engine
 from sqlalchemy.orm import relationship
 import sqlalchemy
+#Import foreignkeyconstraint 
+from sqlalchemy import ForeignKeyConstraint, PrimaryKeyConstraint
+
 
 
 app = Flask(__name__)
@@ -20,13 +22,18 @@ db = SQLAlchemy(app)
 class School(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     school_name = db.Column(db.String(255), nullable=False)
+    user = db.relationship('User', backref='school', lazy=True)
 
 #define User table
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(255), unique=True)
     password = db.Column(db.String(255))
+    first_name = db.Column(db.String(255))
+    last_name = db.Column(db.String(255))
     name = db.Column(db.String(255))
+    licence = db.Column(db.String(255))
+    position = db.Column(db.String(255))
     image_file = db.Column(db.String(255), nullable=False, default='default.jpg')
     # reviews = db.relationship('Survey', backref='author', lazy=True)
     school_id = db.Column(db.Integer, db.ForeignKey('school.id'), nullable=False)
@@ -35,9 +42,38 @@ class User(db.Model, UserMixin):
     is_superuser = db.Column(db.Boolean, default=False)
     is_manager = db.Column(db.Boolean, default=False)
 
+    # def get_reset_token(self, expires_sec=1800):
+    #     s = Serializer(app.config['SECRET_KEY'], expires_sec)
+    #     return s.dumps({'user_id': self.id}).decode('utf-8')
+
+    # @staticmethod
+    # def verify_reset_token(token):
+    #     s = Serializer(app.config['SECRET_KEY'])
+    #     try:
+    #         user_id = s.loads(token)['user_id']
+    #     except:
+    #         return None
+    #     return User.query.get(user_id)
+
+
     def __repr__(self):
         return f"User('{self.name}', '{self.email}', '{self.image_file}')"
+
+   
+#Define Manager table with school as foreign key
+class Manager(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    school_id = db.Column(db.Integer, db.ForeignKey('school.id'), nullable=False)
     
+#Define Supervisor table with school and manager as foreign keys
+class Supervisor(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    school_id = db.Column(db.Integer)
+    manager_id = db.Column(db.Integer)
+    #Foreign key constraint of school id and manager id in the manager table
+    ForeignKeyConstraint( ['manager_id', 'school_id'], ['manager.id', 'manager.school_id'] )
+    
+
 #Define Subsciption table
 class Subscription(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -51,6 +87,7 @@ class SubscriptionByOrder(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     subscription_id = db.Column(db.Integer, db.ForeignKey('subscription.id'), nullable=False)
     subscription_duration = db.Column(db.Integer, nullable=False)
+
 
 
 
