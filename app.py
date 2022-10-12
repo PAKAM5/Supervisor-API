@@ -104,16 +104,16 @@ login_manager.login_view = 'login'
 login_manager.login_message_category = 'info'
 
 
-engine = create_engine('mysql://ops:ops2022@127.0.0.1/ops')
-insp = inspect(engine)
-table_names = insp.get_table_names()
-# if True == False:## FIXME: need condition to see if 'subscription' is an element of table_names
-if 'subscription' not in table_names:
-    db.create_all(app=app)
-    in_school = School(school_name = "UniOlly")
-    db.session.add(in_school)
-    db.session.commit()
-    print('Database created')
+# engine = create_engine('mysql://ops:ops2022@127.0.0.1/ops')
+# insp = inspect(engine)
+# table_names = insp.get_table_names()
+# # if True == False:## FIXME: need condition to see if 'subscription' is an element of table_names
+# if 'subscription' not in table_names:
+#     db.create_all(app=app)
+#     in_school = School(school_name = "UniOlly")
+#     db.session.add(in_school)
+#     db.session.commit()
+#     print('Database created')
 
 
 # SUPERVISOR_SECRET and woocommerce secret 
