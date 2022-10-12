@@ -1,6 +1,7 @@
 # from xml.sax.handler import DTDHandler
 import os
 import json
+from unicodedata import name
 from flask import Flask, jsonify, request, json
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
@@ -172,24 +173,36 @@ def webhook():
     
     def transaction():
         #Send data to respective tables
-        #add school data     
-        school_data = School( school_name = school_name)
-        db.session.add(school_data)
-        db.session.commit()
-        #add user data
-        user_data = User(first_name = first_name, last_name = last_name, email = email, phone = phone, name = 'Administrator')
-        db.session.add(user_data)
-        db.session.commit()
-        #add subscription data
-        subscription_data = Subscription(product_id = product_id, quantity = quantity)
-        db.session.add(subscription_data)
-        db.session.commit()
-        #when data is sent to the database, convert user to is_superuser and is_approved
-        user = User()
-        user.is_superuser = True
-        user.is_approved = True
-        db.session.commit()
-        return "Webhook received!"
+        #add school data
+        try:
+             school_name
+             first_name
+             last_name
+             email
+             phone
+             product_id
+             quantity
+
+        except:
+            raise DataInputError 
+        else:   
+            school_data = School( school_name = school_name)
+            db.session.add(school_data)
+            db.session.commit()
+            #add user data
+            user_data = User(first_name = first_name, last_name = last_name, email = email, phone = phone, name = 'Administrator')
+            db.session.add(user_data)
+            db.session.commit()
+            #add subscription data
+            subscription_data = Subscription(product_id = product_id, quantity = quantity)
+            db.session.add(subscription_data)
+            db.session.commit()
+            #when data is sent to the database, convert user to is_superuser and is_approved
+            user = User()
+            user.is_superuser = True
+            user.is_approved = True
+            db.session.commit()
+            return "Webhook received!"
 
     
 # #  #Create product subscription function for subscription by order table
