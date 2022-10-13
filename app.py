@@ -171,21 +171,21 @@ def webhook():
     print('Quantity: ' + str(quantity))
     print('School Name: ' + str(school_name))
     
-    def transaction():
-        #Send data to respective tables
-        #add school data
-        # try:
-        #      school_name
-        #      first_name
-        #      last_name
-        #      email
-        #      phone
-        #      product_id
-        #      quantity
+    # def transaction():
+    #Send data to respective tables
+    #add school data
+    try:
+         school_name
+         first_name
+         last_name
+         email
+         phone
+         product_id
+         quantity
 
-        # except:
-        #     raise DataInputError 
-        # else:   
+    except:
+        raise DataInputError 
+    else:   
         school_data = School( school_name = school_name)
         db.session.add(school_data)
         db.session.commit()
