@@ -5,7 +5,7 @@ from unicodedata import name
 from flask import Flask, jsonify, request, json
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import inspect, create_engine
+from sqlalchemy import inspect, create_engine, func
 from sqlalchemy.orm import relationship
 import sqlalchemy
 #Import foreignkeyconstraint 
@@ -149,58 +149,79 @@ def webhook():
     print(request_json_dict)
 
     #retrieve the value of the keys
-    first_name = request_json_dict['billing']['first_name']
-    last_name = request_json_dict['billing']['last_name']
-    email = request_json_dict['billing']['email']
-    phone = request_json_dict['billing']['phone']
-    product_id = request_json_dict['line_items'][0]['product_id']
-    quantity = request_json_dict['line_items'][0]['quantity']
-    school_name = request_json_dict['meta_data'][0]['value']
+    first_namew = request_json_dict['billing']['first_name']
+    last_namew = request_json_dict['billing']['last_name']
+    emailw = request_json_dict['billing']['email']
+    phonew = request_json_dict['billing']['phone']
+    product_idw= request_json_dict['line_items'][0]['product_id']
+    quantityw = request_json_dict['line_items'][0]['quantity']
+    school_namew = request_json_dict['meta_data'][0]['value']
+    skuw= request_json_dict['line_items'][0]['sku']
     
 
     #Convert dictionary values to sql objects
 
     #print out examples of values needed 
-    print('First Name: ' + first_name)
-    print('Last Name: ' + last_name)
-    print ('Email: ' + email)
-    print('Phone : ' + phone)
-    print('Product_ID: ' + str(product_id))
-    print('Quantity: ' + str(quantity))
-    print('School Name: ' + str(school_name))
+    print('First Name: ' + first_namew)
+    print('Last Name: ' + last_namew)
+    print ('Email: ' + emailw)
+    print('Phone : ' + phonew)
+    print('Product_ID: ' + str(product_idw))
+    print('Quantity: ' + str(quantityw))
+    print('School Name: ' + str(school_namew))
     
     # def transaction():
     #Send data to respective tables
     #add school data
     try:
-         school_name
-         first_name
-         last_name
-         email
-         phone
-         product_id
-         quantity
+         school_namew
+         first_namew
+         last_namew
+         emailw
+         phonew
+         product_idw
+         quantityw
 
     except:
         raise DataInputError 
-    else:   
-        school_data = School( school_name = school_name)
-        db.session.add(school_data)
-        db.session.commit()
-        #add user data
-        user_data = User(first_name = first_name, last_name = last_name, email = email, phone = phone, name = 'Administrator')
-        db.session.add(user_data)
-        db.session.commit()
-        #add subscription data
-        subscription_data = Subscription(product_id = product_id, quantity = quantity)
-        db.session.add(subscription_data)
-        db.session.commit()
-        #when data is sent to the database, convert user to is_superuser and is_approved
-        user = User()
-        user.is_superuser = True
-        user.is_approved = True
-        db.session.commit()
-        return "Webhook received!"
+    else: 
+        
+        rec = School.query.filter_by(school_name = school_namew)
+        if rec >1 :
+            raise DataInputError
+            #if number of tuples is 1
+        elif rec = 1:
+            #subscription renewal 
+            #add subscription data - expiry date
+            subscription_data = Subscription(product_id = product_idw, quantity = quantityw)
+            db.session.add(subscription_data)
+            db.session.commit()
+            #when data is sent to the database, convert user to is_superuser and is_approved
+            user = User()
+            user.is_superuser = True
+            user.is_approved = True
+            db.session.commit()
+            return "Webhook received!"
+            #if number of tuples is 0
+        elif rec = 0: 
+
+            school_data = School( school_name = school_namew)
+            db.session.add(school_data)
+            db.session.commit()
+            #add user data
+            user_data = User(first_name = first_namew, last_name = last_namew, email = emailw, phone = phonew, name = 'Administrator')
+            db.session.add(user_data)
+            db.session.commit()
+            #add subscription data
+            subscription_data = Subscription(product_id = product_idw, quantity = quantityw)
+            db.session.add(subscription_data)
+            db.session.commit()
+            #when data is sent to the database, convert user to is_superuser and is_approved
+            user = User()
+            user.is_superuser = True
+            user.is_approved = True
+            db.session.commit()
+            return "Webhook received!"
 
     
 # #  #Create product subscription function for subscription by order table
