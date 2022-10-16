@@ -10,7 +10,10 @@ from sqlalchemy.orm import relationship
 import sqlalchemy
 #Import foreignkeyconstraint 
 from sqlalchemy import ForeignKeyConstraint, PrimaryKeyConstraint
-
+import random
+import secrets
+import string
+import datetime
 
 
 app = Flask(__name__)
@@ -64,30 +67,14 @@ class User(db.Model, UserMixin):
 class Manager(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     school_id = db.Column(db.Integer, db.ForeignKey('school.id'), nullable=False)
-    
-#Define Supervisor table with school and manager as foreign keys
-class Supervisor(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    school_id = db.Column(db.Integer)
-    manager_id = db.Column(db.Integer)
-    #Foreign key constraint of school id and manager id in the manager table
-    ForeignKeyConstraint( ['manager_id', 'school_id'], ['manager.id', 'manager.school_id'] )
+    supervisor_id = db.Column(db.Integer, nullable=False)
     
 
 #Define Subsciption table
-class Subscription(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    product_id = db.Column(db.String(255), nullable=False)
-    quantity = db.Column(db.Integer)
-    school_id = db.Column(db.Integer, db.ForeignKey('school.id'), nullable=False)
+class Subscription(db.Model):  
+    school_id = db.Column(db.Integer, db.ForeignKey('school.id'), primary_key =True,nullable=False)
+    expiry_date = db.Column(db.DateTime, nullable=False)
     
-
-#define subscription by order table
-class SubscriptionByOrder(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    subscription_id = db.Column(db.Integer, db.ForeignKey('subscription.id'), nullable=False)
-    subscription_duration = db.Column(db.Integer, nullable=False)
-
 
 # def create_app():
 #secure cookies data, and set up link to mysql database
@@ -170,6 +157,10 @@ def webhook():
     print('Quantity: ' + str(quantityw))
     print('School Name: ' + str(school_namew))
     
+    #
+    
+
+    
     # def transaction():
     #Send data to respective tables
     #add school data
@@ -187,15 +178,22 @@ def webhook():
     else: 
         
         rec = School.query.filter_by(school_name = school_namew)
-        if rec >1 :
+        #get the number of query records
+        count = rec.count()
+        if count >1 :
             raise DataInputError
             #if number of tuples is 1
-        elif rec = 1:
+        elif count== 1:
             #subscription renewal 
             #add subscription data - expiry date
-            subscription_data = Subscription(product_id = product_idw, quantity = quantityw)
-            db.session.add(subscription_data)
-            db.session.commit()
+            if skuw == 'one-month':
+                subscription_data = Subscription(expiry_date = datetime.datetime.now() + datetime.timedelta(days=30))
+                db.session.add(subscription_data)
+                db.session.commit()
+            elif skuw == 'one-year':
+                subscription_data = Subscription(expiry_date = datetime.datetime.now() + datetime.timedelta(days=365))
+                db.session.add(subscription_data)
+                db.session.commit()
             #when data is sent to the database, convert user to is_superuser and is_approved
             user = User()
             user.is_superuser = True
@@ -203,27 +201,36 @@ def webhook():
             db.session.commit()
             return "Webhook received!"
             #if number of tuples is 0
-        elif rec = 0: 
+        elif count == 0: 
 
+            #define random password generator function
+            def random_password_generator(size=8, chars=string.ascii_letters + string.digits):
+                return ''.join(random.choice(chars) for _ in range(size))
+            #generate random password
+            random_password = random_password_generator()
             school_data = School( school_name = school_namew)
             db.session.add(school_data)
             db.session.commit()
             #add user data
-            user_data = User(first_name = first_namew, last_name = last_namew, email = emailw, phone = phonew, name = 'Administrator')
+            user_data = User(first_name = first_namew, last_name = last_namew, email = emailw, phone = phonew, name = 'Administrator', password = random_password)
             db.session.add(user_data)
             db.session.commit()
+            #INSERT INTO table subscription (school_id, expiry_date) VALUES ($schoolid, CURRENT_DATE + INTERVAL 1 MONTH);
             #add subscription data
-            subscription_data = Subscription(product_id = product_idw, quantity = quantityw)
-            db.session.add(subscription_data)
-            db.session.commit()
+            if skuw =='one-month':
+                subscription_data = Subscription(expiry_date = datetime.datetime.now() + datetime.timedelta(days=30))
+                db.session.add(subscription_data)
+                db.session.commit()
+            elif skuw =='one-year':
+                subscription_data = Subscription(expiry_date = datetime.datetime.now() + datetime.timedelta(days=365))
+                db.session.add(subscription_data)
+                db.session.commit()
             #when data is sent to the database, convert user to is_superuser and is_approved
             user = User()
             user.is_superuser = True
             user.is_approved = True
             db.session.commit()
             return "Webhook received!"
-
-    
 # #  #Create product subscription function for subscription by order table
 #     def subscription_duration():
 #         #monthly subscription
