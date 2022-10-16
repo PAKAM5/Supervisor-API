@@ -74,7 +74,7 @@ class User(db.Model, UserMixin):
 #Define Subsciption table
 class Subscription(db.Model):
     school_id = db.Column(db.Integer, db.ForeignKey('school.id'), nullable=False, primary_key = True)
-    expiry_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    expiry_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
     
 
 # def create_app():
