@@ -34,6 +34,8 @@ class Manager(db.Model):
     school_id = db.Column(db.Integer, db.ForeignKey('school.id'), nullable=False)
     supervisor_id = db.Column(db.Integer, primary_key=True)
     
+
+#Select unique date from user where unique user from results 
     
 #define User table
 class User(db.Model, UserMixin):
@@ -45,7 +47,7 @@ class User(db.Model, UserMixin):
     name = db.Column(db.String(255))
     phone = db.Column(db.String(255))
     image_file = db.Column(db.String(255), nullable=False, default='default.jpg')
-    survey = db.relationship('Survey', backref='author', lazy=True)
+    #survey = db.relationship('Survey', backref='author', lazy=True)
     school_id = db.Column(db.Integer, db.ForeignKey('school.id'))
     manager_id = db.Column(db.Integer, db.ForeignKey('manager.id'))
     is_approved = db.Column(db.Boolean, default=False)
