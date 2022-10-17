@@ -185,7 +185,7 @@ def webhook():
         elif rec== 1:
             #subscription renewal 
             #add subscription data - expiry date
-            if skuw == 'one-month':
+            if skuw == 'one-Month':
                 subscription_data = Subscription(expiry_date = datetime.utcnow() + datetime.timedelta(days=30))
                 db.session.add(subscription_data)
                 db.session.commit()
