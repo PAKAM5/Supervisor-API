@@ -13,7 +13,7 @@ from sqlalchemy import ForeignKeyConstraint, PrimaryKeyConstraint
 import random
 import secrets
 import string
-import datetime
+from datetime import datetime, timedelta
 
 
 app = Flask(__name__)
@@ -77,7 +77,7 @@ class Subscription(db.Model):
     expiry_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
     
 
-# def create_app():
+# def create_app():CD 
 #secure cookies data, and set up link to mysql database
 app.config['SECRET_KEY'] = 'lolo'
 # app.config ['SQLALCHEMY_DATABASE_URI'] = 'mysql://ops:ops2022@127.0.0.1/ops'
@@ -186,11 +186,11 @@ def webhook():
             #subscription renewal 
             #add subscription data - expiry date
             if skuw == 'one-month':
-                subscription_data = Subscription(expiry_date = datetime.datetime.now() + datetime.timedelta(days=30))
+                subscription_data = Subscription(expiry_date = datetime.utcnow() + datetime.timedelta(days=30))
                 db.session.add(subscription_data)
                 db.session.commit()
             elif skuw == 'one-year':
-                subscription_data = Subscription(expiry_date = datetime.datetime.now() + datetime.timedelta(days=365))
+                subscription_data = Subscription(expiry_date = datetime.utcnow() + datetime.timedelta(days=365))
                 db.session.add(subscription_data)
                 db.session.commit()
             #when data is sent to the database, convert user to is_superuser and is_approved
@@ -212,11 +212,11 @@ def webhook():
            #INSERT INTO table subscription (school_id, expiry_date) VALUES ($schoolid, CURRENT_DATE + INTERVAL 1 MONTH);
             #add subscription data
             if skuw =='one-month':
-                subscription_data = Subscription(expiry_date = datetime.datetime.now() + datetime.timedelta(days=30))
+                subscription_data = Subscription(expiry_date = datetime.utcnow() + datetime.timedelta(days=30))
                 db.session.add(subscription_data)
                 db.session.commit()
             elif skuw =='one-year':
-                subscription_data = Subscription(expiry_date = datetime.datetime.now() + datetime.timedelta(days=365))
+                subscription_data = Subscription(expiry_date = datetime.utcnow() + datetime.timedelta(days=365))
                 db.session.add(subscription_data)
                 db.session.commit()
            
