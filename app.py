@@ -186,11 +186,11 @@ def webhook():
         #INSERT INTO table subscription (school_id, expiry_date) VALUES ($schoolid, CURRENT_DATE + INTERVAL 1 MONTH);
         #add subscription data
         if skuw =='one-month':
-            subscription_data = Subscription(expiry_date = datetime.utcnow() + datetime.timedelta(days=30))
+            subscription_data = Subscription(expiry_date = datetime.utcnow() + timedelta(days=30))
             db.session.add(subscription_data)
             db.session.commit()
         elif skuw =='one-year':
-            subscription_data = Subscription(expiry_date = datetime.utcnow() + datetime.timedelta(days=365))
+            subscription_data = Subscription(expiry_date = datetime.utcnow() + timedelta(days=365))
             db.session.add(subscription_data)
             db.session.commit()
         
