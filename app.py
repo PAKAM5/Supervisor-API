@@ -113,6 +113,16 @@ class DataInputError(Exception):
     """There was an issue with the data input"""
     pass
 
+#Define school duplication error
+class SchoolDuplicationError(Exception):
+    """The school already exists"""
+    pass
+
+#Define Email duplication error
+class EmailDuplicationError(Exception):
+    """The email already exists"""
+    pass
+
 
 @app.route('/', methods=['GET', "POST"])
 def index():
@@ -171,50 +181,64 @@ def webhook():
     except:
         raise DataInputError 
     else:
-        #define random password generator function
-        def random_password_generator(size=8, chars=string.ascii_letters + string.digits):
-            return ''.join(random.choice(chars) for _ in range(size))
-        #generate random password
-        random_password = random_password_generator()
+        #Count number of records in school_namew query 
+        school_count = School.query.filter_by(name=school_namew).count()
+        if school_count == 0:
+        #Add new school to database
+            #define random password generator function
+            def random_password_generator(size=8, chars=string.ascii_letters + string.digits):
+                return ''.join(random.choice(chars) for _ in range(size))
+            #generate random password
+            random_password = random_password_generator()
 
-        school_data = School( school_name = school_namew)
-        db.session.add(school_data)
-        db.session.commit()
+            #check if school_namew exists in school table
+            if School.query.filter_by(name=school_namew).first() is not None:
+                raise SchoolDuplicationError
+            else:
+                #add school data
+                school_data = School( school_name = school_namew)
+                db.session.add(school_data)
+                db.session.commit()
+            #Get requested school record
+            school= School.query.filter_by(school_name = school_namew).first()
 
-        school= School.query.filter_by(school_name = school_namew).first()
+            #check if emailw exists in user table
+            if User.query.filter_by(email=emailw).first() is not None:
+                raise EmailDuplicationError
+            else:
+                #add user data
+                user_data = User(school_id = school.id, first_name = first_namew, last_name = last_namew, email = emailw, phone = phonew, name = 'Administrator', password = random_password, is_superuser = True, is_manager = True, is_approved = True)
+                db.session.add(user_data)
+                db.session.commit()
+            
+            if skuw =='one-year':
+                subscription_data = Subscription(school_id =school.id, expiry_date = datetime.utcnow() + timedelta(days=365))
+                db.session.add(subscription_data)
+                db.session.commit()
+            elif skuw =='one-Month':
+                subscription_data = Subscription(expiry_date = datetime.utcnow() + timedelta(days=30))
+                db.session.add(subscription_data)
+                db.session.commit()
+            
+            #Right one
+            # msg = Message('BetterBoardingToolkit' , sender = 'test2022965@gmail.com', recipients = [emailw])
+            # msg.body = 'Hi ' + first_namew + ' ' + last_namew + ', your account has been created in the BetterBoardingToolkit App. Your password is' + random_password + 'Please login to your account on the app to continue'
+            # mail.send(msg)
+        
+        elif school_count == 1:
+        #add new subscription to database
+            if skuw =='one-year':
+                    subscription_data = Subscription(school_id =school.id, expiry_date = datetime.utcnow() + timedelta(days=365))
+                    db.session.add(subscription_data)
+                    db.session.commit()
+            elif skuw =='one-Month':
+                subscription_data = Subscription(expiry_date = datetime.utcnow() + timedelta(days=30))
+                db.session.add(subscription_data)
+                db.session.commit()
+        else:
+            raise SchoolDuplicationError
 
-        #add user data
-        user_data = User(school_id = school.id, first_name = first_namew, last_name = last_namew, email = emailw, phone = phonew, name = 'Administrator', password = random_password, is_superuser = True, is_manager = True, is_approved = True)
-        db.session.add(user_data)
-        db.session.commit()
-
-        # message = 'Hi ' + first_namew + ' ' + last_namew + ', your account has been created in the BetterBoardingToolkit App. Your password is' + random_password + 'Please login to your account on the app to continue'
-        # server = smtplib.SMTP('smtp.gmail.com', 587)
-        # server.starttls()
-        # server.login("test2022965@gmail.com", "Test2022")
         
-        #Right one
-        # msg = Message('BetterBoardingToolkit' , sender = 'test2022965@gmail.com', recipients = [emailw])
-        # msg.body = 'Hi ' + first_namew + ' ' + last_namew + ', your account has been created in the BetterBoardingToolkit App. Your password is' + random_password + 'Please login to your account on the app to continue'
-        # mail.send(msg)
-        
-        #INSERT INTO table subscription (school_id, expiry_date) VALUES ($schoolid, CURRENT_DATE + INTERVAL 1 MONTH);
-        #add subscription data
-        #Get school_id from school table
-        
-        
-
-        if skuw =='one-year':
-            subscription_data = Subscription(school_id =school.id, expiry_date = datetime.utcnow() + timedelta(days=365))
-            db.session.add(subscription_data)
-            db.session.commit()
-        elif skuw =='one-Month':
-            subscription_data = Subscription(expiry_date = datetime.utcnow() + timedelta(days=30))
-            db.session.add(subscription_data)
-            db.session.commit()
-        
-        
-       
         return "Webhook received!"
 
         # #Count number of records in query where school name is equal to school name in webhook
