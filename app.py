@@ -221,11 +221,12 @@ def webhook():
                 db.session.commit()
             
             #Right one
-            # msg = Message('BetterBoardingToolkit' , sender = 'test2022965@gmail.com', recipients = [emailw])
-            # msg.body = 'Hi ' + first_namew + ' ' + last_namew + ', your account has been created in the BetterBoardingToolkit App. Your password is' + random_password + 'Please login to your account on the app to continue'
+            # msg = Message('BetterBoardingToolkit Account Confirmation' , sender = 'test2022965@gmail.com', recipients = [emailw])
+            # msg.body = 'Hi ' + first_namew + ' ' + last_namew + ', your account has been created in the BetterBoardingToolkit App. Your school id is' + school.id + ' and your password is' + random_password + 'Please login to your account on the app to continue'
             # mail.send(msg)
         
         elif school_count == 1:
+            school= School.query.filter_by(school_name = school_namew).first()
         #add new subscription to database
             if skuw =='one-year':
                     subscription_data = Subscription(school_id =school.id, expiry_date = datetime.utcnow() + timedelta(days=365))
@@ -241,66 +242,7 @@ def webhook():
         
         return "Webhook received!"
 
-        # #Count number of records in query where school name is equal to school name in webhook
-        # rec = School.query.filter_by(school_name = school_namew).count()
-        # SELECT COUNT(*) FROM Actor
-        # result = db.select([db.func.count()]).select_from(School).scalar()
- 
-        # if rec >1 :
-        #     raise DataInputError
-        #     #if number of tuples is 1
-        # elif rec== 1:
-        #     #subscription renewal 
-        #     #add subscription data - expiry date
-        #     if skuw == 'one-Month':
-        #         subscription_data = Subscription(expiry_date = datetime.utcnow() + datetime.timedelta(days=30))
-        #         db.session.add(subscription_data)
-        #         db.session.commit()
-        #     elif skuw == 'one-year':
-        #         subscription_data = Subscription(expiry_date = datetime.utcnow() + datetime.timedelta(days=365))
-        #         db.session.add(subscription_data)
-        #         db.session.commit()
-        #     #when data is sent to the database, convert user to is_superuser and is_approved
-        #     user = User()
-        #     user.is_superuser = True
-        #     user.is_approved = True
-        #     db.session.commit()
-        #     return "Webhook received!"
-        #     #if number of tuples is 0
-        # elif rec == 0: 
-        #     #define random password generator function
-        #     def random_password_generator(size=8, chars=string.ascii_letters + string.digits):
-        #         return ''.join(random.choice(chars) for _ in range(size))
-        #     #generate random password
-        #     random_password = random_password_generator()
-        #     school_data = School( school_name = school_namew)
-        #     db.session.add(school_data)
-        #     db.session.commit()
-        #    #INSERT INTO table subscription (school_id, expiry_date) VALUES ($schoolid, CURRENT_DATE + INTERVAL 1 MONTH);
-        #     #add subscription data
-        #     if skuw =='one-month':
-        #         subscription_data = Subscription(expiry_date = datetime.utcnow() + datetime.timedelta(days=30))
-        #         db.session.add(subscription_data)
-        #         db.session.commit()
-        #     elif skuw =='one-year':
-        #         subscription_data = Subscription(expiry_date = datetime.utcnow() + datetime.timedelta(days=365))
-        #         db.session.add(subscription_data)
-        #         db.session.commit()
-           
-        #     #add user data
-        #     user_data = User(first_name = first_namew, last_name = last_namew, email = emailw, phone = phonew, name = 'Administrator', password = random_password)
-        #     db.session.add(user_data)
-        #     db.session.commit()
-            
-        #     #when data is sent to the database, convert user to is_superuser and is_approved
-        #     user = User()
-        #     user.is_superuser = True
-        #     user.is_approved = True
-        #     db.session.commit()
-        #     return "Webhook received!"
-
-
-
+      
 # #  #Create product subscription function for subscription by order table
 #     def subscription_duration():
 #         #monthly subscription
