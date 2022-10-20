@@ -35,7 +35,7 @@ mail = Mail(app)
 #Import models
 #Define school table
 class School(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement = True)
     school_name = db.Column(db.String(255))
     user = db.relationship('User', backref='school', lazy=True)
 
@@ -101,18 +101,6 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 login_manager.login_message_category = 'info'
-
-
-# engine = create_engine('mysql://ops:ops2022@127.0.0.1/ops')
-# insp = inspect(engine)
-# table_names = insp.get_table_names()
-# # if True == False:## FIXME: need condition to see if 'subscription' is an element of table_names
-# if 'subscription' not in table_names:
-#     db.create_all(app=app)
-#     in_school = School(school_name = "UniOlly")
-#     db.session.add(in_school)
-#     db.session.commit()
-#     print('Database created')
 
 
 # SUPERVISOR_SECRET and woocommerce secret 
@@ -226,6 +214,9 @@ def webhook():
 
         # #Count number of records in query where school name is equal to school name in webhook
         # rec = School.query.filter_by(school_name = school_namew).count()
+        # SELECT COUNT(*) FROM Actor
+        # result = db.select([db.func.count()]).select_from(School).scalar()
+ 
         # if rec >1 :
         #     raise DataInputError
         #     #if number of tuples is 1
