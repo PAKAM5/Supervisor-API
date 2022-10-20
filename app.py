@@ -1,6 +1,7 @@
 # from xml.sax.handler import DTDHandler
 import os
 import json
+import smtplib
 from unicodedata import name
 from flask import Flask, jsonify, request, json
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
@@ -14,14 +15,24 @@ import random
 import secrets
 import string
 from datetime import datetime, timedelta
+import smtplib
+from flask_mail import Mail, Message
 
 
 app = Flask(__name__)
 app.config ['SQLALCHEMY_DATABASE_URI'] = 'mysql://ops:ops2022@127.0.0.1/ops'
 db = SQLAlchemy(app)
+mail = Mail(app)
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = "test2022965@gmail.com"
+app.config['MAIL_PASSWORD'] = "Test2022"
+app.config['MAIL_USE_SSL'] = True
+mail = Mail(app)
+    
+
 
 #Import models
-
 #Define school table
 class School(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -31,11 +42,10 @@ class School(db.Model):
 #Define Manager table with school as foreign key
 class Manager(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255))
     school_id = db.Column(db.Integer, db.ForeignKey('school.id'), nullable=False)
-    supervisor_id = db.Column(db.Integer, primary_key=True)
+    # supervisor_id = db.Column(db.Integer, primary_key=True)
     
-
-#Select unique date from user where unique user from results 
     
 #define User table
 class User(db.Model, UserMixin):
@@ -78,6 +88,7 @@ class Subscription(db.Model):
     school_id = db.Column(db.Integer, db.ForeignKey('school.id'), nullable=False, primary_key = True)
     expiry_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
     
+    
 
 # def create_app():CD 
 #secure cookies data, and set up link to mysql database
@@ -109,8 +120,6 @@ WOOCOMMERCE_SECRET = 'rUOE`&W$~/gaHj]{x{^l`=^ 7yLcn`L153Up=hiS<0;<7&_zA@'
 SUPERVISOR_SECRET = "lolo"
 
 
-SUPERVISOR_ENDPOINT = 'https://ops.irdo1.safecoms.net/webhook'
-
 #Define error
 class DataInputError(Exception):
     """There was an issue with the data input"""
@@ -135,8 +144,6 @@ def webhook():
     request_json_str = json.dumps(request_json)
     #turn the string into a dictionary
     request_json_dict = json.loads(request_json_str)
-    # print the dictionary
-    print(request_json_dict)
 
     #retrieve the value of the keys
     first_namew = request_json_dict['billing']['first_name']
@@ -159,10 +166,7 @@ def webhook():
     print('Product_ID: ' + str(product_idw))
     print('Quantity: ' + str(quantityw))
     print('School Name: ' + str(school_namew))
-    
-    #
-    
-
+    print('SKU: ' + str(skuw))
     
     # def transaction():
     #Send data to respective tables
@@ -180,30 +184,44 @@ def webhook():
         raise DataInputError 
     else:
         #define random password generator function
+        def random_password_generator(size=8, chars=string.ascii_letters + string.digits):
+            return ''.join(random.choice(chars) for _ in range(size))
+        #generate random password
+        random_password = random_password_generator()
+
         school_data = School( school_name = school_namew)
         db.session.add(school_data)
         db.session.commit()
+
+        #add user data
+        user_data = User(first_name = first_namew, last_name = last_namew, email = emailw, phone = phonew, name = 'Administrator', password = random_password, is_superuser = True, is_manager = True, is_approved = True)
+        db.session.add(user_data)
+        db.session.commit()
+
+        # message = 'Hi ' + first_namew + ' ' + last_namew + ', your account has been created in the BetterBoardingToolkit App. Your password is' + random_password + 'Please login to your account on the app to continue'
+        # server = smtplib.SMTP('smtp.gmail.com', 587)
+        # server.starttls()
+        # server.login("test2022965@gmail.com", "Test2022")
+        
+        #Right one
+        # msg = Message('BetterBoardingToolkit' , sender = 'test2022965@gmail.com', recipients = [emailw])
+        # msg.body = 'Hi ' + first_namew + ' ' + last_namew + ', your account has been created in the BetterBoardingToolkit App. Your password is' + random_password + 'Please login to your account on the app to continue'
+        # mail.send(msg)
+        
         #INSERT INTO table subscription (school_id, expiry_date) VALUES ($schoolid, CURRENT_DATE + INTERVAL 1 MONTH);
         #add subscription data
-        if skuw =='one-month':
-            subscription_data = Subscription(expiry_date = datetime.utcnow() + timedelta(days=30))
-            db.session.add(subscription_data)
-            db.session.commit()
-        elif skuw =='one-year':
+
+        if skuw =='one-year':
             subscription_data = Subscription(expiry_date = datetime.utcnow() + timedelta(days=365))
             db.session.add(subscription_data)
             db.session.commit()
+        elif skuw =='one-Month':
+            subscription_data = Subscription(expiry_date = datetime.utcnow() + timedelta(days=30))
+            db.session.add(subscription_data)
+            db.session.commit()
         
-        #add user data
-        user_data = User(first_name = first_namew, last_name = last_namew, email = emailw, phone = phonew, name = 'Administrator', password = 'hello100')
-        db.session.add(user_data)
-        db.session.commit()
         
-        #when data is sent to the database, convert user to is_superuser and is_approved
-        user = User()
-        user.is_superuser = True
-        user.is_approved = True
-        db.session.commit()
+       
         return "Webhook received!"
 
         # #Count number of records in query where school name is equal to school name in webhook
