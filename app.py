@@ -182,7 +182,7 @@ def webhook():
         raise DataInputError 
     else:
         #Count number of records in school_namew query 
-        school_count = School.query.filter_by(name=school_namew).count()
+        school_count = School.query.filter_by(school_name=school_namew).count()
         if school_count == 0:
         #Add new school to database
             #define random password generator function
@@ -192,7 +192,7 @@ def webhook():
             random_password = random_password_generator()
 
             #check if school_namew exists in school table
-            if School.query.filter_by(name=school_namew).first() is not None:
+            if School.query.filter_by(school_name=school_namew).first() is not None:
                 raise SchoolDuplicationError
             else:
                 #add school data
