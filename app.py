@@ -181,8 +181,10 @@ def webhook():
         db.session.add(school_data)
         db.session.commit()
 
+        school= School.query.filter_by(school_name = school_namew).first()
+
         #add user data
-        user_data = User(first_name = first_namew, last_name = last_namew, email = emailw, phone = phonew, name = 'Administrator', password = random_password, is_superuser = True, is_manager = True, is_approved = True)
+        user_data = User(school_id = school.id, first_name = first_namew, last_name = last_namew, email = emailw, phone = phonew, name = 'Administrator', password = random_password, is_superuser = True, is_manager = True, is_approved = True)
         db.session.add(user_data)
         db.session.commit()
 
@@ -198,9 +200,12 @@ def webhook():
         
         #INSERT INTO table subscription (school_id, expiry_date) VALUES ($schoolid, CURRENT_DATE + INTERVAL 1 MONTH);
         #add subscription data
+        #Get school_id from school table
+        
+        
 
         if skuw =='one-year':
-            subscription_data = Subscription(expiry_date = datetime.utcnow() + timedelta(days=365))
+            subscription_data = Subscription(school_id =school.id, expiry_date = datetime.utcnow() + timedelta(days=365))
             db.session.add(subscription_data)
             db.session.commit()
         elif skuw =='one-Month':
