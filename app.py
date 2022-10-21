@@ -228,14 +228,16 @@ def webhook():
         elif school_count == 1:
             school= School.query.filter_by(school_name = school_namew).first()
             #Get subscription with the same school id as the school id in the school table
-            subscription = Subscription.query.filter_by(school_id = school.id).first()
+            subscription = Subscription.query.with_entities(Subscription.expiry_date).filter_by(school_id = school.id).first()
+            #Get the expiry date column from the subscription table where the school id is the same as the school id in the school table
+
         #add new subscription to database
             if skuw =='one-year':
-                subscription_data = Subscription(subscription.school_id, expiry_date = datetime.utcnow() + timedelta(days=365))
+                subscription_data = subscription(expiry_date = datetime.utcnow() + timedelta(days=365))
                 db.session.add(subscription_data)
                 db.session.commit()
             elif skuw =='one-Month':
-                subscription_data = Subscription(subscription.school_id, expiry_date = datetime.utcnow() + timedelta(days=30))
+                subscription_data = subscription(expiry_date = datetime.utcnow() + timedelta(days=30))
                 db.session.add(subscription_data)
                 db.session.commit()
         else:
