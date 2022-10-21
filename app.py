@@ -233,11 +233,11 @@ def webhook():
 
         #update new expiry date in subscription table
             if skuw =='one-year':
-                Subscription.expiry_date = subscription.expiry_date + timedelta(days=365)
+                subscription.expiry_date = subscription.expiry_date + timedelta(days=365)
                 # subscription_data = Subscription(expiry_date = Subscription.expiry_date + timedelta(days=365))
                 db.session.commit()
             elif skuw =='one-Month':
-                Subscription.expiry_date = subscription.expiry_date + timedelta(days=30)
+                subscription.expiry_date = subscription.expiry_date + timedelta(days=30)
                 # subscription_data = Subscription(expiry_date = Subscription.expiry_date + timedelta(days=30))
                 db.session.commit()
         else:
