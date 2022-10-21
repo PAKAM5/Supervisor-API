@@ -209,16 +209,32 @@ def webhook():
                 user_data = User(school_id = school.id, first_name = first_namew, last_name = last_namew, email = emailw, phone = phonew, name = 'Administrator', password = random_password, is_superuser = True, is_manager = True, is_approved = True)
                 db.session.add(user_data)
                 db.session.commit()
-            
+
+                #add initial subscription data
+                initial_subscription_data = Subscription(school_id =school.id, expiry_date = datetime.utcnow())
+                db.session.add(initial_subscription_data)
+                db.session.commit()
+
+                #Get subscription with the same school id as the school id in the school table
+                subscription = Subscription.query.filter_by(school_id = school.id).first()
+
+                #extend subscription expiration date
                 for i in range(quantityw):
                     if skuw =='one-year':
-                        subscription_data = Subscription(school_id =school.id, expiry_date = datetime.utcnow() + timedelta(days=365))
-                        db.session.add(subscription_data)
+                        subscription.expiry_date = subscription.expiry_date + timedelta(days=365)
                         db.session.commit()
                     if skuw =='one-Month':
-                        subscription_data = Subscription(school_id = school.id, expiry_date = datetime.utcnow() + timedelta(days=30))
-                        db.session.add(subscription_data)
+                        subscription.expiry_date = subscription.expiry_date + timedelta(days=30)
                         db.session.commit()
+
+                    # if skuw =='one-year':
+                    #     subscription_data = Subscription(school_id =school.id, expiry_date = datetime.utcnow() + timedelta(days=365))
+                    #     db.session.add(subscription_data)
+                    #     db.session.commit()
+                    # if skuw =='one-Month':
+                    #     subscription_data = Subscription(school_id = school.id, expiry_date = datetime.utcnow() + timedelta(days=30))
+                    #     db.session.add(subscription_data)
+                    #     db.session.commit()
             
             #Account confirmation email
             msg = Message('BetterBoardingToolkit Account Confirmation' , sender = 'test2022965@gmail.com', recipients = [emailw])
