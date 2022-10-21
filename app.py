@@ -215,7 +215,7 @@ def webhook():
                         subscription_data = Subscription(school_id =school.id, expiry_date = datetime.utcnow() + timedelta(days=365))
                         db.session.add(subscription_data)
                         db.session.commit()
-                    elif skuw =='one-Month':
+                    if skuw =='one-Month':
                         subscription_data = Subscription(school_id = school.id, expiry_date = datetime.utcnow() + timedelta(days=30))
                         db.session.add(subscription_data)
                         db.session.commit()
@@ -236,7 +236,7 @@ def webhook():
                 if skuw =='one-year':
                     subscription.expiry_date = subscription.expiry_date + timedelta(days=365)
                     db.session.commit()
-                elif skuw =='one-Month':
+                if skuw =='one-Month':
                     subscription.expiry_date = subscription.expiry_date + timedelta(days=30)
                     db.session.commit()
         else:
