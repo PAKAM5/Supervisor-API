@@ -231,6 +231,7 @@ def webhook():
             #Get the expiry date column from the subscription table where the school id is the same as the school id in the school table
 
         #update new expiry date in subscription table
+        for i in range(quantityw):
             if skuw =='one-year':
                 subscription.expiry_date = subscription.expiry_date + timedelta(days=365)
                 db.session.commit()
