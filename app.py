@@ -103,11 +103,6 @@ login_manager.login_view = 'login'
 login_manager.login_message_category = 'info'
 
 
-# SUPERVISOR_SECRET and woocommerce secret 
-WOOCOMMERCE_SECRET = 'rUOE`&W$~/gaHj]{x{^l`=^ 7yLcn`L153Up=hiS<0;<7&_zA@'
-SUPERVISOR_SECRET = "lolo"
-
-
 #Define error
 class DataInputError(Exception):
     """There was an issue with the data input"""
@@ -214,14 +209,15 @@ def webhook():
                 db.session.add(user_data)
                 db.session.commit()
             
-            if skuw =='one-year':
-                subscription_data = Subscription(school_id =school.id, expiry_date = datetime.utcnow() + timedelta(days=365))
-                db.session.add(subscription_data)
-                db.session.commit()
-            elif skuw =='one-Month':
-                subscription_data = Subscription(school_id = school.id, expiry_date = datetime.utcnow() + timedelta(days=30))
-                db.session.add(subscription_data)
-                db.session.commit()
+            for i in range(quantityw):
+                if skuw =='one-year':
+                    subscription_data = Subscription(school_id =school.id, expiry_date = datetime.utcnow() + timedelta(days=365))
+                    db.session.add(subscription_data)
+                    db.session.commit()
+                elif skuw =='one-Month':
+                    subscription_data = Subscription(school_id = school.id, expiry_date = datetime.utcnow() + timedelta(days=30))
+                    db.session.add(subscription_data)
+                    db.session.commit()
             
             #Right one
             # msg = Message('BetterBoardingToolkit Account Confirmation' , sender = 'test2022965@gmail.com', recipients = [emailw])
