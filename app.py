@@ -228,7 +228,7 @@ def webhook():
         elif school_count == 1:
             school= School.query.filter_by(school_name = school_namew).first()
             #Get subscription with the same school id as the school id in the school table
-            subscription = Subscription.query.with_entities(Subscription.expiry_date).filter_by(school_id = school.id).first()
+            subscription = Subscription.query.load_only(Subscription.expiry_date).filter_by(school_id = school.id).first()
             #Get the expiry date column from the subscription table where the school id is the same as the school id in the school table
 
         #add new subscription to database
