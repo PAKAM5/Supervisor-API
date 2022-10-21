@@ -203,21 +203,22 @@ def webhook():
             #check if emailw exists in user table
             if User.query.filter_by(email=emailw).first() is not None:
                 raise EmailDuplicationError
+
             else:
                 #add user data
                 user_data = User(school_id = school.id, first_name = first_namew, last_name = last_namew, email = emailw, phone = phonew, name = 'Administrator', password = random_password, is_superuser = True, is_manager = True, is_approved = True)
                 db.session.add(user_data)
                 db.session.commit()
             
-            for i in range(quantityw):
-                if skuw =='one-year':
-                    subscription_data = Subscription(school_id =school.id, expiry_date = datetime.utcnow() + timedelta(days=365))
-                    db.session.add(subscription_data)
-                    db.session.commit()
-                elif skuw =='one-Month':
-                    subscription_data = Subscription(school_id = school.id, expiry_date = datetime.utcnow() + timedelta(days=30))
-                    db.session.add(subscription_data)
-                    db.session.commit()
+                for i in range(quantityw):
+                    if skuw =='one-year':
+                        subscription_data = Subscription(school_id =school.id, expiry_date = datetime.utcnow() + timedelta(days=365))
+                        db.session.add(subscription_data)
+                        db.session.commit()
+                    elif skuw =='one-Month':
+                        subscription_data = Subscription(school_id = school.id, expiry_date = datetime.utcnow() + timedelta(days=30))
+                        db.session.add(subscription_data)
+                        db.session.commit()
             
             #Right one
             # msg = Message('BetterBoardingToolkit Account Confirmation' , sender = 'test2022965@gmail.com', recipients = [emailw])
@@ -230,14 +231,14 @@ def webhook():
             subscription = Subscription.query.filter_by(school_id = school.id).first()
             #Get the expiry date column from the subscription table where the school id is the same as the school id in the school table
 
-        #update new expiry date in subscription table
-        for i in range(quantityw):
-            if skuw =='one-year':
-                subscription.expiry_date = subscription.expiry_date + timedelta(days=365)
-                db.session.commit()
-            elif skuw =='one-Month':
-                subscription.expiry_date = subscription.expiry_date + timedelta(days=30)
-                db.session.commit()
+          #update new expiry date in subscription table
+            for i in range(quantityw):
+                if skuw =='one-year':
+                    subscription.expiry_date = subscription.expiry_date + timedelta(days=365)
+                    db.session.commit()
+                elif skuw =='one-Month':
+                    subscription.expiry_date = subscription.expiry_date + timedelta(days=30)
+                    db.session.commit()
         else:
             raise SchoolDuplicationError
 
