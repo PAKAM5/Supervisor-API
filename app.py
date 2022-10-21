@@ -143,6 +143,9 @@ def webhook():
     #turn the string into a dictionary
     request_json_dict = json.loads(request_json_str)
 
+    #print the dictionary
+    print(request_json_dict)
+
     #retrieve the value of the keys
     first_namew = request_json_dict['billing']['first_name']
     last_namew = request_json_dict['billing']['last_name']
@@ -234,11 +237,9 @@ def webhook():
         #update new expiry date in subscription table
             if skuw =='one-year':
                 subscription.expiry_date = subscription.expiry_date + timedelta(days=365)
-                # subscription_data = Subscription(expiry_date = Subscription.expiry_date + timedelta(days=365))
                 db.session.commit()
             elif skuw =='one-Month':
                 subscription.expiry_date = subscription.expiry_date + timedelta(days=30)
-                # subscription_data = Subscription(expiry_date = Subscription.expiry_date + timedelta(days=30))
                 db.session.commit()
         else:
             raise SchoolDuplicationError
