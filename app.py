@@ -227,17 +227,17 @@ def webhook():
         
         elif school_count == 1:
             school= School.query.filter_by(school_name = school_namew).first()
+            #Get subscription with the same school id as the school id in the school table
+            subscription = Subscription.query.filter_by(school_id = school.id).first()
         #add new subscription to database
             if skuw =='one-year':
-                if Subscription(school_id =school.id):
-                    subscription_data = Subscription(expiry_date = datetime.utcnow() + timedelta(days=365))
-                    db.session.add(subscription_data)
-                    db.session.commit()
+                subscription_data = subscription(expiry_date = datetime.utcnow() + timedelta(days=365))
+                db.session.add(subscription_data)
+                db.session.commit()
             elif skuw =='one-Month':
-                if Subscription(school_id =school.id):
-                    subscription_data = Subscription(expiry_date = datetime.utcnow() + timedelta(days=30))
-                    db.session.add(subscription_data)
-                    db.session.commit()
+                subscription_data = subscription(expiry_date = datetime.utcnow() + timedelta(days=30))
+                db.session.add(subscription_data)
+                db.session.commit()
         else:
             raise SchoolDuplicationError
 
