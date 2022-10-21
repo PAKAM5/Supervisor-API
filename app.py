@@ -220,10 +220,10 @@ def webhook():
                         db.session.add(subscription_data)
                         db.session.commit()
             
-            #Right one
-            # msg = Message('BetterBoardingToolkit Account Confirmation' , sender = 'test2022965@gmail.com', recipients = [emailw])
-            # msg.body = 'Hi ' + first_namew + ' ' + last_namew + ', your account has been created in the BetterBoardingToolkit App. Your school id is' + school.id + ' and your password is' + random_password + 'Please login to your account on the app to continue'
-            # mail.send(msg)
+            #Account confirmation email
+            msg = Message('BetterBoardingToolkit Account Confirmation' , sender = 'test2022965@gmail.com', recipients = [emailw])
+            msg.body = 'Hi ' + first_namew + ' ' + last_namew + ', your account has been created in the BetterBoardingToolkit App. Your school id is' + school.id + ' and your password is' + random_password + 'Please login to your account on the app using the details you have just inputted to continue'
+            mail.send(msg)
         
         elif school_count == 1:
             school= School.query.filter_by(school_name = school_namew).first()
@@ -239,30 +239,17 @@ def webhook():
                 if skuw =='one-Month':
                     subscription.expiry_date = subscription.expiry_date + timedelta(days=30)
                     db.session.commit()
+
+            #Account renewal email
+            msg = Message('BetterBoardingToolkit Account Renewal' , sender = 'test2022965@gmail.com', recipients = [emailw])
+            msg.body = 'Hi ' + first_namew + ' ' + last_namew + ', your account for the BetterBoardingToolkit App, has been renewed. Your new expiry date is' + subscription.expiry_date + '.' 
+            mail.send(msg)
+
         else:
             raise SchoolDuplicationError
 
         
         return "Webhook received!"
-
-      
-# #  #Create product subscription function for subscription by order table
-#     def subscription_duration():
-#         #monthly subscription
-#         if product_id == "a":
-#             sub = SubscriptionByOrder()
-#             sub.subscription_duration = func.now() + func.interval(1, 'month')
-#             # new_subscription
-#         #yearly subscription
-#         elif product_id == "b":
-#             sub = SubscriptionByOrder()
-#             sub.subscription_duration = func.now() + func.interval(1, 'year')
-#         db.session.add(new_subscription)
-#         db.session.commit()
-
-
-
-# return app
 
 #run app
 if __name__ == '__main__':
