@@ -233,10 +233,10 @@ def webhook():
 
         #update new expiry date in subscription table
             if skuw =='one-year':
-                subscription_data = subscription(expiry_date = datetime.utcnow() + timedelta(days=365))
+                subscription_data = Subscription(expiry_date = datetime.utcnow() + timedelta(days=365))
                 db.session.commit()
             elif skuw =='one-Month':
-                subscription_data = subscription(expiry_date = datetime.utcnow() + timedelta(days=30))
+                subscription_data = Subscription(expiry_date = datetime.utcnow() + timedelta(days=30))
                 db.session.commit()
         else:
             raise SchoolDuplicationError
