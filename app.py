@@ -24,9 +24,10 @@ app.config ['SQLALCHEMY_DATABASE_URI'] = 'mysql://ops:ops2022@127.0.0.1/ops'
 db = SQLAlchemy(app)
 mail = Mail(app)
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 587
+app.config['MAIL_PORT'] = 465
 app.config['MAIL_USERNAME'] = "test2022965@gmail.com"
-app.config['MAIL_PASSWORD'] = "Test2022"
+app.config['MAIL_PASSWORD'] = "ydwmajlxzfpvefoe"
+# app.config['MAIL_PASSWORD'] = "Test2022"
 app.config['MAIL_USE_SSL'] = True
 mail = Mail(app)
     
