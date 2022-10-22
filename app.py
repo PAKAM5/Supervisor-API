@@ -238,10 +238,10 @@ def webhook():
                     #     db.session.add(subscription_data)
                     #     db.session.commit()
             
-            #Account confirmation email
-            msg = Message('BetterBoardingToolkit Account Confirmation' , sender = 'test2022965@gmail.com', recipients = [emailw])
-            msg.body = 'Hi ' + first_namew + ' ' + last_namew + ', your account has been created in the BetterBoardingToolkit App. Your school id is' + str(school.id) + ' and your password is' + str(random_password) + 'Please login to your account on the app using the details you have just inputted to continue'
-            mail.send(msg)
+            # #Account confirmation email
+            # msg = Message('BetterBoardingToolkit Account Confirmation' , sender = 'test2022965@gmail.com', recipients = [emailw])
+            # msg.body = 'Hi ' + first_namew + ' ' + last_namew + ', your account has been created in the BetterBoardingToolkit App. Your school id is' + str(school.id) + ' and your password is' + str(random_password) + 'Please login to your account on the app using the details you have just inputted to continue'
+            # mail.send(msg)
         
         elif school_count == 1:
             school= School.query.filter_by(school_name = school_namew).first()
@@ -258,10 +258,10 @@ def webhook():
                     subscription.expiry_date = subscription.expiry_date + timedelta(days=30)
                     db.session.commit()
 
-            #Account renewal email
-            msg = Message('BetterBoardingToolkit Account Renewal' , sender = 'test2022965@gmail.com', recipients = [emailw])
-            msg.body = 'Hi ' + first_namew + ' ' + last_namew + ', your account for the BetterBoardingToolkit App, has been renewed. Your new expiry date is' + str(subscription.expiry_date) + '.' 
-            mail.send(msg)
+            # #Account renewal email
+            # msg = Message('BetterBoardingToolkit Account Renewal' , sender = 'test2022965@gmail.com', recipients = [emailw])
+            # msg.body = 'Hi ' + first_namew + ' ' + last_namew + ', your account for the BetterBoardingToolkit App, has been renewed. Your new expiry date is' + str(subscription.expiry_date) + '.' 
+            # mail.send(msg)
 
         else:
             raise SchoolDuplicationError
