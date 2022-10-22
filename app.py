@@ -3,6 +3,7 @@ import os
 import json
 import smtplib
 from unicodedata import name
+from unittest import TextTestRunner
 from flask import Flask, jsonify, request, json
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
@@ -24,12 +25,12 @@ app.config ['SQLALCHEMY_DATABASE_URI'] = 'mysql://ops:ops2022@127.0.0.1/ops'
 db = SQLAlchemy(app)
 mail = Mail(app)
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 587
+app.config['MAIL_PORT'] = 465
 app.config['MAIL_USERNAME'] = "test2022965@gmail.com"
 app.config['MAIL_PASSWORD'] = "ydwmajlxzfpvefoe"
 # app.config['MAIL_PASSWORD'] = "Test2022"
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USE_SSL'] = False
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
 mail = Mail(app)
     
 
