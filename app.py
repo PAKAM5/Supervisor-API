@@ -24,14 +24,14 @@ app = Flask(__name__)
 app.config ['SQLALCHEMY_DATABASE_URI'] = 'mysql://ops:ops2022@127.0.0.1/ops'
 db = SQLAlchemy(app)
 mail = Mail(app)
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 465
-app.config['MAIL_USERNAME'] = "test2022965@gmail.com"
-app.config['MAIL_PASSWORD'] = "ftkmbdhxgejkmtwc"
-# app.config['MAIL_PASSWORD'] = "Test2022!"
-app.config['MAIL_USE_TLS'] = False
-app.config['MAIL_USE_SSL'] = True
-mail = Mail(app)
+# app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+# app.config['MAIL_PORT'] = 465
+# app.config['MAIL_USERNAME'] = "test2022965@gmail.com"
+# app.config['MAIL_PASSWORD'] = "ftkmbdhxgejkmtwc"
+# # app.config['MAIL_PASSWORD'] = "Test2022!"
+# app.config['MAIL_USE_TLS'] = False
+# app.config['MAIL_USE_SSL'] = True
+# mail = Mail(app)
     
 
 
@@ -228,20 +228,11 @@ def webhook():
                     if skuw =='one-Month':
                         subscription.expiry_date = subscription.expiry_date + timedelta(days=30)
                         db.session.commit()
-
-                    # if skuw =='one-year':
-                    #     subscription_data = Subscription(school_id =school.id, expiry_date = datetime.utcnow() + timedelta(days=365))
-                    #     db.session.add(subscription_data)
-                    #     db.session.commit()
-                    # if skuw =='one-Month':
-                    #     subscription_data = Subscription(school_id = school.id, expiry_date = datetime.utcnow() + timedelta(days=30))
-                    #     db.session.add(subscription_data)
-                    #     db.session.commit()
             
             # #Account confirmation email
-            # msg = Message('BetterBoardingToolkit Account Confirmation' , sender = 'test2022965@gmail.com', recipients = [emailw])
-            # msg.body = 'Hi ' + first_namew + ' ' + last_namew + ', your account has been created in the BetterBoardingToolkit App. Your school id is' + str(school.id) + ' and your password is' + str(random_password) + 'Please login to your account on the app using the details you have just inputted to continue'
-            # mail.send(msg)
+            msg = Message('BetterBoardingToolkit Account Confirmation' , sender = 'test2022965@gmail.com', recipients = [emailw])
+            msg.body = 'Hi ' + first_namew + ' ' + last_namew + ', your account has been created in the BetterBoardingToolkit App. Your school id is' + str(school.id) + ' and your password is' + str(random_password) + 'Please login to your account on the app using the details you have just inputted to continue'
+            mail.send(msg)
         
         elif school_count == 1:
             school= School.query.filter_by(school_name = school_namew).first()
@@ -259,9 +250,9 @@ def webhook():
                     db.session.commit()
 
             # #Account renewal email
-            # msg = Message('BetterBoardingToolkit Account Renewal' , sender = 'test2022965@gmail.com', recipients = [emailw])
-            # msg.body = 'Hi ' + first_namew + ' ' + last_namew + ', your account for the BetterBoardingToolkit App, has been renewed. Your new expiry date is' + str(subscription.expiry_date) + '.' 
-            # mail.send(msg)
+            msg = Message('BetterBoardingToolkit Account Renewal' , sender = 'test2022965@gmail.com', recipients = [emailw])
+            msg.body = 'Hi ' + first_namew + ' ' + last_namew + ', your account for the BetterBoardingToolkit App, has been renewed. Your new expiry date is' + str(subscription.expiry_date) + '.' 
+            mail.send(msg)
 
         else:
             raise SchoolDuplicationError
