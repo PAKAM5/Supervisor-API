@@ -231,7 +231,7 @@ def webhook():
             
             # #Account confirmation email
             msg = Message('BetterBoardingToolkit Account Confirmation' , sender = 'test2022965@gmail.com', recipients = [emailw])
-            msg.body = 'Hi ' + first_namew + ' ' + last_namew + ', your account has been created in the BetterBoardingToolkit App. Your school id is' + str(school.id) + ' and your password is' + str(random_password) + 'Please login to your account on the app using the details you have just inputted to continue'
+            msg.body = 'Hi ' + first_namew + ' ' + last_namew + ', your account has been created in the BetterBoardingToolkit App. Your account school id is ' + str(school.id) + ' and your password is ' + str(random_password) + 'Please login to your account on the app using the details you have just inputted to continue'
             mail.send(msg)
         
         elif school_count == 1:
